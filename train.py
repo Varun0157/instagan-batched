@@ -97,12 +97,15 @@ if __name__ == "__main__":
 
     opt.name = name + "_seg"
     opt.model = "seg_only"
-    seg_only_model = train(opt)
+    opt.isTrain = False  # force the loading of the checkpoint
+    seg_only_model = create_model(opt)
+    seg_only_model.setup(opt)
     assert type(seg_only_model) is SegOnlyModel
-    # seg_only_model.eval()
+    seg_only_model.eval()
 
     opt.name = name
     opt.model = "insta_gan"
+    opt.isTrain = True
     final_model = train(opt, seg_only_model)
 
     assert type(run) is wandb.sdk.wandb_run.Run
