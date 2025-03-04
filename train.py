@@ -29,7 +29,21 @@ def train(opt, seg_only_model: SegOnlyModel) -> BaseModel:
     print("#training images = %d" % dataset_size)
 
     model = create_model(opt, seg_only_model)
+    print("after create_model")
+    for param in seg_only_model.netG_A.parameters():
+        print(param.data)
+        break
+    for param in seg_only_model.netG_B.parameters():
+        print(param.data)
+        break
     model.setup(opt)
+    print("after setup")
+    for param in seg_only_model.netG_A.parameters():
+        print(param.data)
+        break
+    for param in seg_only_model.netG_B.parameters():
+        print(param.data)
+        break
     visualizer = Visualizer(opt)
     total_steps = 0
 
@@ -85,6 +99,14 @@ def train(opt, seg_only_model: SegOnlyModel) -> BaseModel:
             % (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time)
         )
         model.update_learning_rate()
+
+        print(f"after epoch {epoch}")
+        for param in seg_only_model.netG_A.parameters():
+            print(param.data)
+            break
+        for param in seg_only_model.netG_B.parameters():
+            print(param.data)
+            break
 
     return model
 
@@ -165,6 +187,7 @@ if __name__ == "__main__":
     opt.continue_train = False
     final_model = train(opt, seg_only_model)
 
+    print("after train")
     for param in seg_only_model.netG_A.parameters():
         print(param.data)
         break
