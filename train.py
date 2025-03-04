@@ -89,6 +89,7 @@ def train(opt, seg_only_model: Optional[SegOnlyModel] = None) -> BaseModel:
 
 def test_seg_only(model: SegOnlyModel, opt) -> None:
     phase = opt.phase
+    opt.results_dir = "./results/"
     opt.phase = "test"
 
     data_loader = CreateDataLoader(opt)
@@ -124,6 +125,7 @@ def test_seg_only(model: SegOnlyModel, opt) -> None:
     # save the website
     webpage.save()
 
+    opt.results_dir = None
     opt.phase = phase
 
 
