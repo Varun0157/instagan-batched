@@ -144,6 +144,10 @@ if __name__ == "__main__":
     seg_only_model = create_model(opt)
     seg_only_model.setup(opt)
     assert type(seg_only_model) is SegOnlyModel
+    for param in seg_only_model.netG_A.parameters():
+        param.requires_grad = False
+    for param in seg_only_model.netG_B.parameters():
+        param.requires_grad = False
     seg_only_model.eval()
 
     for param in seg_only_model.netG_A.parameters():
