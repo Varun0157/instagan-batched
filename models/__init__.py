@@ -40,6 +40,8 @@ def create_model(opt, seg_model: Optional[SegOnlyModel] = None):
     model = find_model_using_name(opt.model)
     instance = model()
     if type(instance) is InstaGANModel:
+        print("creating InstaGANModel")
+        print("type(seg_model):", type(seg_model))
         assert seg_model is not None
         instance.initialize(opt, seg_model)
     else:

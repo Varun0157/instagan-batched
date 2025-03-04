@@ -96,6 +96,7 @@ class InstaGANModel(BaseModel):
         else:
             self.model_names = ["G_A", "G_B"]
 
+        print("type('segModel.netG_A'): ", type(segModel.netG_A))
         self.netG_A = networks.define_G(
             opt.input_nc,
             opt.output_nc,

@@ -145,6 +145,16 @@ if __name__ == "__main__":
     assert type(seg_only_model) is SegOnlyModel
     seg_only_model.eval()
 
+    for param in seg_only_model.netG_A.parameters():
+        print(param.data)
+        break
+    for param in seg_only_model.netG_B.parameters():
+        print(param.data)
+        break
+
+    # opt_copy = copy.deepcopy(opt)
+    # test_seg_only(seg_only_model, opt_copy)
+
     opt.name = name
     opt.model = "insta_gan"
     opt.continue_train = False
