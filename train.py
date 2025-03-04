@@ -92,12 +92,12 @@ if __name__ == "__main__":
     name = opt.name
     model = opt.model
 
-    if model != "insta_gan":
-        raise Exception("Model not found")
+    # if model != "insta_gan":
+    #     raise Exception("Model not found")
 
     opt.name = name + "_seg"
     opt.model = "seg_only"
-    opt.isTrain = False  # force the loading of the checkpoint
+    opt.continue_train = True
     seg_only_model = create_model(opt)
     seg_only_model.setup(opt)
     assert type(seg_only_model) is SegOnlyModel
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     opt.name = name
     opt.model = "insta_gan"
-    opt.isTrain = True
+    opt.continue_train = False
     final_model = train(opt, seg_only_model)
 
     assert type(run) is wandb.sdk.wandb_run.Run
