@@ -1,3 +1,4 @@
+import os
 import time
 from typing import Optional
 from models.seg_only_model import SegOnlyModel
@@ -5,7 +6,9 @@ from options.train_options import TrainOptions
 from data import CreateDataLoader
 from models import create_model
 from models.base_model import BaseModel
+from util import html
 from util.visualizer import Visualizer
+from util.visualizer import save_images
 
 import wandb
 import wandb.sdk.wandb_run
@@ -84,6 +87,46 @@ def train(opt, seg_only_model: Optional[SegOnlyModel] = None) -> BaseModel:
     return model
 
 
+def test_seg_only(model: SegOnlyModel, opt) -> None:
+    phase = opt.phase
+    opt.phase = "test"
+
+    data_loader = CreateDataLoader(opt)
+    dataset = data_loader.load_data()
+
+    # create a website
+    web_dir = os.path.join(opt.results_dir, opt.name, "%s_%s" % (opt.phase, opt.epoch))
+    webpage = html.HTML(
+        web_dir,
+        "Experiment = %s, Phase = %s, Epoch = %s" % (opt.name, opt.phase, opt.epoch),
+    )
+    # test with eval mode. This only affects layers like batchnorm and dropout.
+    # pix2pix: we use batchnorm and dropout in the original pix2pix. You can experiment it with and without eval() mode.
+    # CycleGAN: It should not affect CycleGAN as CycleGAN uses instancenorm without dropout.
+    if opt.eval:
+        model.eval()
+    for i, data in enumerate(dataset):
+        if i >= opt.num_test:
+            break
+        model.set_input(data)
+        model.test()
+        visuals = model.get_current_visuals()
+        img_path = model.get_image_paths()
+        if i % 5 == 0:
+            print("processing (%04d)-th image... %s" % (i, img_path))
+        save_images(
+            webpage,
+            visuals,
+            img_path,
+            aspect_ratio=opt.aspect_ratio,
+            width=opt.display_winsize,
+        )
+    # save the website
+    webpage.save()
+
+    opt.phase = phase
+
+
 if __name__ == "__main__":
     opt = TrainOptions().parse()
 
@@ -91,9 +134,6 @@ if __name__ == "__main__":
 
     name = opt.name
     model = opt.model
-
-    # if model != "insta_gan":
-    #     raise Exception("Model not found")
 
     opt.name = name + "_seg"
     opt.model = "seg_only"
@@ -103,10 +143,12 @@ if __name__ == "__main__":
     assert type(seg_only_model) is SegOnlyModel
     seg_only_model.eval()
 
-    opt.name = name
-    opt.model = "insta_gan"
-    opt.continue_train = False
-    final_model = train(opt, seg_only_model)
+    test_seg_only(seg_only_model, opt)
+
+    # opt.name = name
+    # opt.model = "insta_gan"
+    # opt.continue_train = False
+    # final_model = train(opt, seg_only_model)
 
     assert type(run) is wandb.sdk.wandb_run.Run
     run.finish()

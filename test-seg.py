@@ -7,7 +7,7 @@ from util.visualizer import save_images
 from util import html
 
 
-if __name__ == "__main__":
+def test_seg() -> None:
     opt = TestOptions().parse()
     # hard-code some parameters for test
     opt.num_threads = 1  # test code only supports num_threads = 1
@@ -53,3 +53,7 @@ if __name__ == "__main__":
         )
     # save the website
     webpage.save()
+
+
+if __name__ == "__main__":
+    test_seg()
