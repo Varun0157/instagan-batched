@@ -261,7 +261,7 @@ def define_G(
         )
     elif netG == "set":
         if not seg_only:
-            print("creating not seg only generator for [set]")
+            print("creating img only generator for [set]")
             if mask_gen is None:
                 raise Exception(
                     "mask_gen must be provided for [set] generator in img gen mode"

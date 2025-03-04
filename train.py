@@ -22,7 +22,7 @@ def get_run_name(opt):
     return project_name
 
 
-def train(opt, seg_only_model: Optional[SegOnlyModel] = None) -> BaseModel:
+def train(opt, seg_only_model: SegOnlyModel) -> BaseModel:
     data_loader = CreateDataLoader(opt)
     dataset = data_loader.load_data()
     dataset_size = len(data_loader)
@@ -145,13 +145,13 @@ if __name__ == "__main__":
     assert type(seg_only_model) is SegOnlyModel
     seg_only_model.eval()
 
+    opt.name = name
+    opt.model = "insta_gan"
+    opt.continue_train = False
+    final_model = train(opt, seg_only_model)
+
     opt_copy = copy.deepcopy(opt)
     test_seg_only(seg_only_model, opt_copy)
-
-    # opt.name = name
-    # opt.model = "insta_gan"
-    # opt.continue_train = False
-    # final_model = train(opt, seg_only_model)
 
     assert type(run) is wandb.sdk.wandb_run.Run
     run.finish()
