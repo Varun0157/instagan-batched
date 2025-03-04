@@ -93,6 +93,7 @@ def test_seg_only(model: SegOnlyModel, opt) -> None:
     opt.results_dir = "./results/"
     opt.phase = "test"
     opt.aspect_ratio = 1.0
+    opt.name = opt.name + "_seg"
 
     opt.num_threads = 1  # test code only supports num_threads = 1
     opt.batch_size = 1  # test code only supports batch_size = 1
@@ -159,6 +160,13 @@ if __name__ == "__main__":
     opt.model = "insta_gan"
     opt.continue_train = False
     final_model = train(opt, seg_only_model)
+
+    for param in seg_only_model.netG_A.parameters():
+        print(param.data)
+        break
+    for param in seg_only_model.netG_B.parameters():
+        print(param.data)
+        break
 
     opt_copy = copy.deepcopy(opt)
     test_seg_only(seg_only_model, opt_copy)

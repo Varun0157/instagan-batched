@@ -663,10 +663,6 @@ class ResnetSetGenerator(nn.Module):
 
         trg = self.mask_generator(inp)  # (B, CA + CX, W, H)
 
-        for param in self.mask_generator.parameters():
-            print(param.data)
-            break
-
         segs_trg = trg[:, self.input_nc :, :, :]  # (B, CA, W, H)
 
         # run encoder
