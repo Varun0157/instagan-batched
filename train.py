@@ -163,7 +163,7 @@ if __name__ == "__main__":
     opt.name = name
     opt.model = "insta_gan"
     opt.continue_train = False
-    # final_model = train(opt, seg_only_model)
+    final_model = train(opt, seg_only_model)
 
     for param in seg_only_model.netG_A.parameters():
         print(param.data)

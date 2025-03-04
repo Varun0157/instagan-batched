@@ -36,14 +36,14 @@ def get_option_setter(model_name):
     return model_class.modify_commandline_options
 
 
-def create_model(opt, seg_model: Optional[SegOnlyModel] = None):
+def create_model(opt, seg_only_model: Optional[SegOnlyModel] = None):
     model = find_model_using_name(opt.model)
     instance = model()
     if type(instance) is InstaGANModel:
         print("creating InstaGANModel")
-        print("type(seg_model):", type(seg_model))
-        assert seg_model is not None
-        instance.initialize(opt, seg_model)
+        print("type(seg_model):", type(seg_only_model))
+        assert seg_only_model is not None
+        instance.initialize(opt, seg_only_model)
     else:
         instance.initialize(opt)
     print("model [%s] was created" % (instance.name()))
