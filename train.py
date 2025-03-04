@@ -1,3 +1,5 @@
+import copy
+
 import os
 import time
 from typing import Optional
@@ -88,9 +90,14 @@ def train(opt, seg_only_model: Optional[SegOnlyModel] = None) -> BaseModel:
 
 
 def test_seg_only(model: SegOnlyModel, opt) -> None:
-    phase = opt.phase
     opt.results_dir = "./results/"
     opt.phase = "test"
+    opt.aspect_ratio = 1.0
+
+    opt.num_threads = 1  # test code only supports num_threads = 1
+    opt.batch_size = 1  # test code only supports batch_size = 1
+    opt.serial_batches = True  # no shuffle
+    opt.no_flip = True  # no flip
 
     data_loader = CreateDataLoader(opt)
     dataset = data_loader.load_data()
@@ -101,13 +108,9 @@ def test_seg_only(model: SegOnlyModel, opt) -> None:
         web_dir,
         "Experiment = %s, Phase = %s, Epoch = %s" % (opt.name, opt.phase, opt.epoch),
     )
-    # test with eval mode. This only affects layers like batchnorm and dropout.
-    # pix2pix: we use batchnorm and dropout in the original pix2pix. You can experiment it with and without eval() mode.
-    # CycleGAN: It should not affect CycleGAN as CycleGAN uses instancenorm without dropout.
-    if opt.eval:
-        model.eval()
+
     for i, data in enumerate(dataset):
-        if i >= opt.num_test:
+        if i >= 50:
             break
         model.set_input(data)
         model.test()
@@ -124,9 +127,6 @@ def test_seg_only(model: SegOnlyModel, opt) -> None:
         )
     # save the website
     webpage.save()
-
-    opt.results_dir = None
-    opt.phase = phase
 
 
 if __name__ == "__main__":
@@ -145,7 +145,8 @@ if __name__ == "__main__":
     assert type(seg_only_model) is SegOnlyModel
     seg_only_model.eval()
 
-    test_seg_only(seg_only_model, opt)
+    opt_copy = copy.deepcopy(opt)
+    test_seg_only(seg_only_model, opt_copy)
 
     # opt.name = name
     # opt.model = "insta_gan"
