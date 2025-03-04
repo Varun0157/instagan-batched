@@ -661,9 +661,9 @@ class ResnetSetGenerator(nn.Module):
         if mean.sum() == 0:
             mean[0] = 1  # forward at least one segmentation
 
-        trg = self.mask_generator(inp)  # (B, CA + CX, W, H)
-
-        segs_trg = trg[:, self.input_nc :, :, :]  # (B, CA, W, H)
+        with torch.no_grad():
+            trg = self.mask_generator(inp)  # (B, CA + CX, W, H)
+            segs_trg = trg[:, self.input_nc :, :, :]  # (B, CA, W, H)
 
         # run encoder
         enc_img = self.encoder_img(img)
