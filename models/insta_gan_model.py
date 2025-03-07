@@ -443,10 +443,6 @@ class InstaGANModel(BaseModel):
         self.rec_A_seg_list = list()
         self.rec_B_seg_list = list()
 
-        self.set_requires_grad(
-            [self.netG_A.module.mask_generator, self.netG_B.module.mask_generator],
-            False,
-        )
         # sequential mini-batch translation
         for i in range(self.ins_iter):
             # forward

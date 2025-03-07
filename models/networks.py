@@ -582,9 +582,9 @@ class ResnetSetGenerator(nn.Module):
         )  # 3*ngf
 
         self.mask_generator = mask_gen
-        # freeze
-        for param in self.mask_generator.parameters():
-            param.requires_grad = False
+        # # freeze
+        # for param in self.mask_generator.parameters():
+        #     param.requires_grad = False
 
     def get_encoder(
         self,
